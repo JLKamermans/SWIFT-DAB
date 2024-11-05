@@ -6,11 +6,11 @@ The model is called the **D**ark Matter **A**ccreting **B**lack Hole model, or D
 
 As BHs originally need to run with gas in SWIFT, and we preferred only DM particles for computational reason, I removed all dependencies on gas in this fork (in an admittedly very ugly fashion).
 The DAB model BHs have three new parameters: mass_growth_gyr (the rate of mass growth per gyr), max_mass (if this mass is reached, the BH stops growing) and time_last_growth (so the BH is not accidentally grown multiple times per timestep).
-As they are no longer running with gas, they _should_ not have any functions corresponding to the accretion of gas.
+Only the interactions between BHs and gas _should_ be removed, however I have not extensively tested what happens if gas is included anyway.
 
 **Where can I find an example?**
 
-In the folder Examples/DAB, I have included all the files needed to run a 1e3 solar mass BH with a 1e4 solar mass Hernquist halo, and to generate some plots from the resulting results. If you are new to SWIFT, it might be good to first run a different example, which are found [here](https://swift.strw.leidenuniv.nl/docs/GettingStarted/running_example.html)
+In the folder Examples/DAB, I have included all the files needed to run a 1e3 solar mass BH with a 1e4 solar mass Hernquist halo for one million DM particles, and to generate some plots from the resulting results. If you are new to SWIFT, it might be good to first run a different example, which are found [here](https://swift.strw.leidenuniv.nl/docs/GettingStarted/running_example.html).
 
 **How do I set the code up?**
 
