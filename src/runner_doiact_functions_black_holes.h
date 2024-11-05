@@ -177,7 +177,7 @@ void DOSELF1_BH(struct runner *r, struct cell *c, int timer) {
  */
 void DO_NONSYM_PAIR1_BH_NAIVE(struct runner *r, struct cell *restrict ci,
                               struct cell *restrict cj) {
-
+#ifndef BLACK_HOLES_DAB
 #ifdef SWIFT_DEBUG_CHECKS
 #if (FUNCTION_TASK_LOOP == TASK_LOOP_DENSITY)
   if (ci->nodeID != engine_rank) error("Should be run on a different node");
@@ -318,6 +318,7 @@ void DO_NONSYM_PAIR1_BH_NAIVE(struct runner *r, struct cell *restrict ci,
   }   /* loop over the bparts in ci. */
 
 #endif /* (FUNCTION_TASK_LOOP == TASK_LOOP_SWALLOW) */
+#endif /*BLACK_HOLES_DAB*/
 }
 
 void DOPAIR1_BH_NAIVE(struct runner *r, struct cell *restrict ci,

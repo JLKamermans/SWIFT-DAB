@@ -1897,6 +1897,53 @@ static inline void engine_make_hydro_loops_dependencies(
 #endif
 
 /**
+ * @brief Schedules the Black Hole funcs of the DAB module.
+ *
+ * Contains all the funcs that do not depend on gas, right now only
+ * the growth func.
+ *
+ * @param map_data Offset of first two indices disguised as a pointer.
+ * @param num_elements Number of cells to traverse.
+ * @param extra_data The #engine.
+ */
+void engine_make_black_hole_tasks_mapper(void *map_data, int num_elements,
+                                         void *extra_data){
+  struct engine *e = (struct engine *)extra_data;
+  struct scheduler *sched = &e->sched;
+
+  struct task *t_bh_growth = NULL;
+
+  for (int ind = 0; ind < num_elements; ind++) {
+
+    struct task *t = &((struct task *)map_data)[ind];
+    const enum task_types t_type = t->type;
+    const long long flags = t->flags;
+    struct cell *const ci = t->ci;
+
+/* If you aren't running with the DAB model, we don't grow the black hole */
+#ifdef BLACK_HOLES_DAB
+    /* The black hole growth? */
+    if (t_type == task_type_self || t_type == task_type_sub_self) {
+      const int bcount_i = ci->black_holes.count;
+      if (bcount_i > 0 && t_type == task_type_self) {
+        t_bh_growth = scheduler_addtask(sched, task_type_self,
+                                        task_subtype_bh_growth, flags,
+                                        0, ci, NULL);
+        engine_addlink(e, &ci->black_holes.bh_growth, t_bh_growth);
+      } else if (bcount_i > 0 && t_type == task_type_sub_self) {
+        t_bh_growth = scheduler_addtask(sched, task_type_sub_self,
+                                        task_subtype_bh_growth, flags,
+                                        0, ci, NULL);
+        engine_addlink(e, &ci->black_holes.bh_growth, t_bh_growth);
+      }
+    }
+#endif
+
+  }
+
+}
+
+/**
  * @brief Duplicates the first hydro loop and construct all the
  * dependencies for the hydro part
  *
@@ -1934,6 +1981,9 @@ void engine_make_extra_hydroloop_tasks_mapper(void *map_data, int num_elements,
   struct task *t_bh_feedback = NULL;
   struct task *t_rt_inject = NULL;
   struct task *t_sink_formation = NULL;
+#ifdef BLACK_HOLES_DAB
+  struct task *t_bh_growth = NULL;
+#endif
 
   for (int ind = 0; ind < num_elements; ind++) {
 
@@ -3607,6 +3657,18 @@ void engine_maketasks(struct engine *e) {
   threadpool_map(&e->threadpool, engine_make_hierarchical_tasks_mapper, cells,
                  nr_cells, sizeof(struct cell), threadpool_auto_chunk_size, e);
 
+
+
+  /* Do the black hole tasks! */
+#ifdef BLACK_HOLES_DAB
+  if (e->policy & engine_policy_black_holes) {
+    engine_make_black_hole_tasks_mapper(sched->tasks, sched->nr_tasks, e);
+  }
+
+  if (e->verbose)
+    message("Creating Black Hole tasks took %.3f %s.",
+            clocks_from_ticks(getticks() - tic2), clocks_getunit());
+#endif
   tic2 = getticks();
 
   /* Run through the tasks and make force tasks for each density task.

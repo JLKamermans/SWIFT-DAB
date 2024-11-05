@@ -58,7 +58,8 @@ enum random_number_type {
   random_number_stellar_feedback_2 = 6977309513LL,
   random_number_stellar_enrichment = 2936881973LL,
   random_number_BH_feedback = 1640531371LL,
-  random_number_BH_swallow = 4947009007LL
+  random_number_BH_swallow = 4947009007LL,
+  random_number_BH_reposition = 59969537LL
 };
 
 #ifndef __APPLE__

@@ -1404,7 +1404,9 @@ void scheduler_reweight(struct scheduler *s, int verbose) {
           cost = 1.f * (wscale * count_i) * count_i;
         else if (t->subtype == task_subtype_rt_inject) {
           cost = 1.f * wscale * scount_i * count_i;
-        } else
+        } else if (t->subtype == task_subtype_bh_growth)
+          cost = 1.f * wscale * bcount_i;
+        else
           error("Untreated sub-type for selfs: %s",
                 subtaskID_names[t->subtype]);
         break;
@@ -1542,6 +1544,8 @@ void scheduler_reweight(struct scheduler *s, int verbose) {
                    t->subtype == task_subtype_bh_swallow ||
                    t->subtype == task_subtype_bh_feedback) {
           cost = 1.f * (wscale * bcount_i) * count_i;
+        } else if (t->subtype == task_subtype_bh_growth){
+          cost = 1.f * wscale * bcount_i;
         } else if (t->subtype == task_subtype_do_gas_swallow) {
           cost = 1.f * wscale * count_i;
         } else if (t->subtype == task_subtype_do_bh_swallow) {
@@ -1787,14 +1791,16 @@ void scheduler_enqueue(struct scheduler *s, struct task *t) {
         if (t->subtype == task_subtype_grav ||
             t->subtype == task_subtype_external_grav)
           qid = t->ci->grav.super->owner;
-        else
+        else if (t->subtype != task_subtype_bh_growth)
           qid = t->ci->hydro.super->owner;
-        break;
+          break;
       case task_type_sort:
       case task_type_ghost:
       case task_type_drift_part:
+#ifndef BLACK_HOLES_DAB
         qid = t->ci->hydro.super->owner;
         break;
+#endif
       case task_type_drift_gpart:
         qid = t->ci->grav.super->owner;
         break;

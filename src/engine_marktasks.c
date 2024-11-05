@@ -166,6 +166,10 @@ void engine_marktasks_mapper(void *map_data, int num_elements,
         }
       }
 
+      /* Black hole growth, both a subself and self is allowed */
+      else if (t_subtype == task_subtype_bh_growth){
+        scheduler_activate(s, t);
+      }
       else if (t_type == task_type_self &&
                t_subtype == task_subtype_stars_feedback) {
         if (ci_active_stars) {

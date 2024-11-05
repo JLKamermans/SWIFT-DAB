@@ -27,6 +27,8 @@
 #include "./black_holes/Default/black_holes_properties.h"
 #elif defined(BLACK_HOLES_EAGLE)
 #include "./black_holes/EAGLE/black_holes_properties.h"
+#elif defined(BLACK_HOLES_DAB)
+#include "./black_holes/DAB/black_holes_properties.h"
 #else
 #error "Invalid choice of black hole model"
 #endif

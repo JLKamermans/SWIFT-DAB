@@ -138,6 +138,7 @@ const char *subtaskID_names[task_subtype_count] = {
     "bpart_rho",
     "bpart_swallow",
     "bpart_feedback",
+    "bh_growth",
     "bh_density",
     "bh_swallow",
     "do_gas_swallow",
@@ -255,6 +256,7 @@ __attribute__((always_inline)) INLINE static enum task_actions task_acts_on(
         case task_subtype_bh_feedback:
         case task_subtype_bh_swallow:
         case task_subtype_do_gas_swallow:
+        case task_subtype_bh_growth:
           return task_action_all;
           break;
 
@@ -530,6 +532,7 @@ void task_unlock(struct task *t) {
       } else if ((subtype == task_subtype_bh_density) ||
                  (subtype == task_subtype_bh_feedback) ||
                  (subtype == task_subtype_bh_swallow) ||
+                 (subtype == task_subtype_bh_growth) ||
                  (subtype == task_subtype_do_gas_swallow)) {
         cell_bunlocktree(ci);
         cell_unlocktree(ci);
@@ -562,6 +565,7 @@ void task_unlock(struct task *t) {
       } else if ((subtype == task_subtype_bh_density) ||
                  (subtype == task_subtype_bh_feedback) ||
                  (subtype == task_subtype_bh_swallow) ||
+                 (subtype == task_subtype_bh_growth) ||
                  (subtype == task_subtype_do_gas_swallow)) {
         cell_bunlocktree(ci);
         cell_bunlocktree(cj);
@@ -718,6 +722,14 @@ int task_lock(struct task *t) {
           cell_sunlocktree(ci);
           return 0;
         }
+      } else if (subtype == task_subtype_bh_growth) {
+
+          if (ci->black_holes.hold) return 0;
+          if (cell_blocktree(ci) != 0) return 0;
+          if (cell_locktree(ci) != 0) {
+            cell_bunlocktree(ci);
+            return 0;
+          }
       } else if ((subtype == task_subtype_bh_density) ||
                  (subtype == task_subtype_bh_feedback) ||
                  (subtype == task_subtype_bh_swallow) ||
@@ -971,6 +983,9 @@ void task_get_group_name(int type, int subtype, char *cluster) {
       break;
     case task_subtype_bh_swallow:
       strcpy(cluster, "BHSwallow");
+      break;
+    case task_subtype_bh_growth:
+      strcpy(cluster, "BHGrowth");
       break;
     case task_subtype_do_gas_swallow:
       strcpy(cluster, "DoGasSwallow");
@@ -1502,6 +1517,7 @@ enum task_categories task_get_category(const struct task *t) {
 
         case task_subtype_bh_density:
         case task_subtype_bh_swallow:
+        case task_subtype_bh_growth:
         case task_subtype_do_gas_swallow:
         case task_subtype_do_bh_swallow:
         case task_subtype_bh_feedback:

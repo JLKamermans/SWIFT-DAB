@@ -3,6 +3,7 @@
  * Copyright (c) 2012 Pedro Gonnet (pedro.gonnet@durham.ac.uk)
  *                    Matthieu Schaller (matthieu.schaller@durham.ac.uk)
  *               2015 Peter W. Draper (p.w.draper@durham.ac.uk)
+ *               2024 Jasper Leonora Kamermans (j.l.p.d.kamermans@students.uu.nl)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -32,6 +33,7 @@
 #include "engine.h"
 #include "timers.h"
 
+#ifndef BLACK_HOLES_DAB
 /**
  * @brief Process all the gas particles in a cell that have been flagged for
  * swallowing by a black hole.
@@ -266,7 +268,7 @@ void runner_do_gas_swallow_pair(struct runner *r, struct cell *ci,
   if (cell_is_active_black_holes(cj, e)) runner_do_gas_swallow(r, ci, timer);
   if (cell_is_active_black_holes(ci, e)) runner_do_gas_swallow(r, cj, timer);
 }
-
+#endif /*BLACK_HOLES_DAB*/
 /**
  * @brief Process all the BH particles in a cell that have been flagged for
  * swallowing by a black hole.
@@ -290,8 +292,11 @@ void runner_do_bh_swallow(struct runner *r, struct cell *c, int timer) {
   struct space *s = e->s;
   const int with_cosmology = (e->policy & engine_policy_cosmology);
   const struct black_holes_props *props = e->black_holes_properties;
+#ifndef BLACK_HOLES_DAB
   const int use_nibbling = props->use_nibbling;
-
+#else
+  const int use_nibbling = 0;
+#endif
   struct bpart *bparts = s->bparts;
   const size_t nr_bpart = s->nr_bparts;
 #ifdef WITH_MPI
@@ -504,3 +509,52 @@ void runner_do_bh_swallow_pair(struct runner *r, struct cell *ci,
   if (cell_is_active_black_holes(cj, e)) runner_do_bh_swallow(r, ci, timer);
   if (cell_is_active_black_holes(ci, e)) runner_do_bh_swallow(r, cj, timer);
 }
+
+#ifdef BLACK_HOLES_DAB
+/**
+ * @brief Computes the new mass of the black hole.
+ *
+ * @param r The thread #runner.
+ * @param ci First #cell.
+ * @param timer Are we timing this?
+ */
+void runner_do_black_hole_growth(
+    struct runner *r, struct cell *c, int timer) {
+
+  const struct engine *e = r->e;
+  struct space *s = e->s;
+  const size_t nr_bpart = s->nr_bparts;
+  struct bpart *bparts = s->bparts;
+
+  /* Early abort?
+   * (We only want cells which actually have BH's */
+  if (c->black_holes.count == 0 ||
+      c->black_holes.ti_old_part != e->ti_current) {
+    return;
+  }
+
+  /* Loop over the progeny ? */
+  if (c->split) {
+    for (int k = 0; k < 8; k++) {
+      if (c->progeny[k] != NULL) {
+        struct cell *restrict cp = c->progeny[k];
+
+        runner_do_black_hole_growth(r, cp, 0);
+      }
+    }
+  } else {
+
+    for(size_t counter = 0; counter < nr_bpart; counter++){
+
+      struct bpart *bi = &bparts[counter];
+
+      /* Ignore inhibited particles (they have already been removed!) */
+      if (bpart_is_inhibited(bi, e)) continue;
+      /* Is the black hole actually growing? */
+      if (bi->mass_growth_gyr == 0.f) continue;
+      /* If the black holes mass is lower than its max mass, grow it! */
+      if (bi->mass < bi->max_mass*1e-10 || bi->max_mass < 0.)  black_hole_growth(bi, e->time);
+    }
+  }
+}
+#endif

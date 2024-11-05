@@ -81,8 +81,10 @@ void stats_add(struct statistics *a, const struct statistics *b) {
   a->gas_Z_mass += b->gas_Z_mass;
   a->star_Z_mass += b->star_Z_mass;
   a->bh_Z_mass += b->bh_Z_mass;
+#ifndef BLACK_HOLES_DAB
   a->bh_accretion_rate += b->bh_accretion_rate;
   a->bh_accreted_mass += b->bh_accreted_mass;
+#endif
   a->mom[0] += b->mom[0];
   a->mom[1] += b->mom[1];
   a->mom[2] += b->mom[2];
@@ -463,8 +465,10 @@ void stats_collect_bpart_mapper(void *map_data, int nr_bparts,
                                  time, potential, phys_const, gp);
 
     /* Collect accretion data. */
+#ifndef BLACK_HOLES_DAB
     stats.bh_accretion_rate += black_holes_get_accretion_rate(bp);
     stats.bh_accreted_mass += black_holes_get_accreted_mass(bp);
+#endif
   }
 
   /* Now write back to memory */

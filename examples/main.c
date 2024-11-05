@@ -551,6 +551,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+#ifndef BLACK_HOLES_DAB
   if (!with_hydro && with_black_holes) {
     if (myrank == 0) {
       argparse_usage(&argparse);
@@ -560,6 +561,7 @@ int main(int argc, char *argv[]) {
     }
     return 1;
   }
+#endif
 
   if (!with_hydro && with_line_of_sight) {
     if (myrank == 0) {

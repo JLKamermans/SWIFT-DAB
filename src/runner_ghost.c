@@ -481,6 +481,7 @@ void runner_do_stars_ghost(struct runner *r, struct cell *c, int timer) {
   if (timer) TIMER_TOC(timer_do_stars_ghost);
 }
 
+#ifndef BLACK_HOLES_DAB
 /**
  * @brief Intermediate task after the density to check that the smoothing
  * lengths are correct.
@@ -856,7 +857,7 @@ void runner_do_black_holes_swallow_ghost(struct runner *r, struct cell *c,
 
   if (timer) TIMER_TOC(timer_do_black_holes_ghost);
 }
-
+#endif // BLACK_HOLES_DAB
 /**
  * @brief Intermediate task after the gradient loop that does final operations
  * on the gradient quantities and optionally slope limits the gradients

@@ -52,6 +52,10 @@ struct cell_black_holes {
   /*! The star ghost task itself */
   struct task *swallow_ghost[3];
 
+#ifdef BLACK_HOLES_DAB
+    /*! The growth function of a bh*/
+    struct link *bh_growth;
+#endif
   /*! Linked list of the tasks computing this cell's BH density. */
   struct link *density;
 

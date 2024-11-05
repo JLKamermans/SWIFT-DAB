@@ -575,6 +575,9 @@ void cell_clean_links(struct cell *c, void *data) {
   c->stars.feedback = NULL;
   c->black_holes.density = NULL;
   c->black_holes.swallow = NULL;
+#ifdef BLACK_HOLES_DAB
+  c->black_holes.bh_growth = NULL;
+#endif
   c->black_holes.do_gas_swallow = NULL;
   c->black_holes.do_bh_swallow = NULL;
   c->black_holes.feedback = NULL;

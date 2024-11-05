@@ -122,6 +122,7 @@ void runner_do_gas_swallow_self(struct runner *r, struct cell *c, int timer);
 void runner_do_bh_swallow_self(struct runner *r, struct cell *c, int timer);
 void runner_do_gas_swallow_pair(struct runner *r, struct cell *ci,
                                 struct cell *cj, int timer);
+void runner_do_black_hole_growth(struct runner *r, struct cell *c, int timer);
 void runner_do_bh_swallow_pair(struct runner *r, struct cell *ci,
                                struct cell *cj, int timer);
 void runner_do_star_formation(struct runner *r, struct cell *c, int timer);

@@ -134,6 +134,7 @@ enum task_subtypes {
   task_subtype_bpart_rho,
   task_subtype_bpart_swallow,
   task_subtype_bpart_feedback,
+  task_subtype_bh_growth,
   task_subtype_bh_density,
   task_subtype_bh_swallow,
   task_subtype_do_gas_swallow,

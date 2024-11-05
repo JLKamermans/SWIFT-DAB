@@ -2097,7 +2097,7 @@ esac
 # Black hole model.
 AC_ARG_WITH([black-holes],
    [AS_HELP_STRING([--with-black-holes=<model>],
-      [Black holes model to use @<:@none, EAGLE default: none@:>@]
+      [Black holes model to use @<:@none, EAGLE, DAB default: none@:>@]
    )],
    [with_black_holes="$withval"],
    [with_black_holes="none"]
@@ -2118,6 +2118,9 @@ case "$with_black_holes" in
    EAGLE)
       AC_DEFINE([BLACK_HOLES_EAGLE], [1], [EAGLE black hole model])
    ;;
+  DAB)
+     AC_DEFINE([BLACK_HOLES_DAB], [1], [DAB black hole model])
+  ;;
    *)
       AC_MSG_ERROR([Unknown black-hole model: $with_black_holes])
    ;;

@@ -79,7 +79,11 @@
 #define _TIMER_DOSUB_PAIR_BH(f) PASTE(timer_dosub_pair_bh, f)
 #define TIMER_DOSUB_PAIR_BH _TIMER_DOSUB_PAIR_BH(FUNCTION)
 
+#ifdef BLACK_HOLES_DAB
+#define _IACT_BH_GAS(f)
+#else
 #define _IACT_BH_GAS(f) PASTE(runner_iact_nonsym_bh_gas, f)
+#endif
 #define IACT_BH_GAS _IACT_BH_GAS(FUNCTION)
 
 #define _IACT_BH_BH(f) PASTE(runner_iact_nonsym_bh_bh, f)

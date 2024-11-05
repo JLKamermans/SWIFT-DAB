@@ -187,6 +187,11 @@ void *runner_main(void *data) {
         case task_type_self:
           if (t->subtype == task_subtype_density)
             runner_doself1_branch_density(r, ci);
+#ifdef BLACK_HOLES_DAB
+          else if (t->subtype == task_subtype_bh_growth){
+            runner_do_black_hole_growth(r, ci, 1);
+          }
+#endif
 #ifdef EXTRA_HYDRO_LOOP
           else if (t->subtype == task_subtype_gradient)
             runner_doself1_branch_gradient(r, ci);
@@ -207,8 +212,10 @@ void *runner_main(void *data) {
             runner_doself_branch_bh_density(r, ci);
           else if (t->subtype == task_subtype_bh_swallow)
             runner_doself_branch_bh_swallow(r, ci);
+#ifndef BLACK_HOLES_DAB
           else if (t->subtype == task_subtype_do_gas_swallow)
             runner_do_gas_swallow_self(r, ci, 1);
+#endif
           else if (t->subtype == task_subtype_do_bh_swallow)
             runner_do_bh_swallow_self(r, ci, 1);
           else if (t->subtype == task_subtype_bh_feedback)
@@ -243,8 +250,10 @@ void *runner_main(void *data) {
             runner_dopair_branch_bh_density(r, ci, cj);
           else if (t->subtype == task_subtype_bh_swallow)
             runner_dopair_branch_bh_swallow(r, ci, cj);
+#ifndef BLACK_HOLES_DAB
           else if (t->subtype == task_subtype_do_gas_swallow)
             runner_do_gas_swallow_pair(r, ci, cj, 1);
+#endif
           else if (t->subtype == task_subtype_do_bh_swallow)
             runner_do_bh_swallow_pair(r, ci, cj, 1);
           else if (t->subtype == task_subtype_bh_feedback)
@@ -261,6 +270,11 @@ void *runner_main(void *data) {
         case task_type_sub_self:
           if (t->subtype == task_subtype_density)
             runner_dosub_self1_density(r, ci, 1);
+#ifdef BLACK_HOLES_DAB
+          else if (t->subtype == task_subtype_bh_growth){
+            runner_do_black_hole_growth(r, ci, 1);
+          }
+#endif
 #ifdef EXTRA_HYDRO_LOOP
           else if (t->subtype == task_subtype_gradient)
             runner_dosub_self1_gradient(r, ci, 1);
@@ -277,8 +291,10 @@ void *runner_main(void *data) {
             runner_dosub_self_bh_density(r, ci, 1);
           else if (t->subtype == task_subtype_bh_swallow)
             runner_dosub_self_bh_swallow(r, ci, 1);
+#ifndef BLACK_HOLES_DAB
           else if (t->subtype == task_subtype_do_gas_swallow)
             runner_do_gas_swallow_self(r, ci, 1);
+#endif
           else if (t->subtype == task_subtype_do_bh_swallow)
             runner_do_bh_swallow_self(r, ci, 1);
           else if (t->subtype == task_subtype_bh_feedback)
@@ -311,8 +327,10 @@ void *runner_main(void *data) {
             runner_dosub_pair_bh_density(r, ci, cj, 1);
           else if (t->subtype == task_subtype_bh_swallow)
             runner_dosub_pair_bh_swallow(r, ci, cj, 1);
+#ifndef BLACK_HOLES_DAB
           else if (t->subtype == task_subtype_do_gas_swallow)
             runner_do_gas_swallow_pair(r, ci, cj, 1);
+#endif
           else if (t->subtype == task_subtype_do_bh_swallow)
             runner_do_bh_swallow_pair(r, ci, cj, 1);
           else if (t->subtype == task_subtype_bh_feedback)
@@ -356,12 +374,14 @@ void *runner_main(void *data) {
         case task_type_stars_ghost:
           runner_do_stars_ghost(r, ci, 1);
           break;
+#ifndef BLACK_HOLES_DAB
         case task_type_bh_density_ghost:
           runner_do_black_holes_density_ghost(r, ci, 1);
           break;
         case task_type_bh_swallow_ghost3:
           runner_do_black_holes_swallow_ghost(r, ci, 1);
           break;
+#endif
         case task_type_drift_part:
           runner_do_drift_part(r, ci, 1);
           break;
