@@ -1,6 +1,6 @@
 **Fork of the SWIFT code made to include growing Black Holes.** 
 
-The model is called the **D**ark Matter **A**ccreting **B**lack Hole model, or DAB for short in the code. The model was used in the _Darkness Visible: N-Body Simulations of Dark Matter Spikes in Hernquist Haloes_ paper accesible **HERE (INSERT!)**. The newest version of the SWIFT code is found [here](https://github.com/SWIFTSIM/SWIFT), and its documentation is found [here](https://swift.strw.leidenuniv.nl). Note that this code is based on SWIFT version 0.9.0, and as of writing version 1.0.0 is already released, yielding many new improvements and utilities.
+The model is called the **D**ark Matter **A**ccreting **B**lack Hole model, or DAB for short in the code. The model was used in the _Darkness Visible: N-Body Simulations of Dark Matter Spikes in Hernquist Haloes_ paper accesible on arXiv [here](https://arxiv.org/abs/2411.12007). The newest version of the SWIFT code is found [here](https://github.com/SWIFTSIM/SWIFT), and its documentation is found [here](https://swift.strw.leidenuniv.nl). Note that this code is based on SWIFT version 0.9.0, and as of writing version 1.0.0 is already released, yielding many new improvements and utilities.
 
 **What changed?**
 
